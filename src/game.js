@@ -26,6 +26,7 @@ export default class Game {
 
   // oyunu baslat
   startGame = () => {
+
     this.generationCount += 1;
     this.highscore = Math.max(this.highscore, this.gameStart ? Date.now() - this.gameStart : 0);
     this.gameStart = Date.now();
@@ -36,6 +37,8 @@ export default class Game {
     this.pipes = this.generatePipes();
     this.birds = this.generateBirds();
     this.deadBirds = [];
+    this.passedPipeCount = 0;
+    this.previousPipeX = Number.MAX_VALUE;
     this.loop = setInterval(this.gameLoop, 1000 / this.gameSpeed);
   }
 
@@ -91,6 +94,7 @@ export default class Game {
     this.updateBirdDeadState();
     this.deadBirds.push(...this.birds.filter(bird => bird.isDead));
     this.birds = this.birds.filter(bird => !bird.isDead);
+    this.onPipePassed(() => { this.passedPipeCount += 1; });
 
     // tum kuslar oldu, oyunu tekrar baslat
     if (this.birds.length === 0) {
@@ -125,6 +129,16 @@ export default class Game {
     }
   }
 
+  onPipePassed = (callback) => {
+    if (this.birds && this.birds.length > 0) {
+      const nextPipe = this.getNextPipe(this.birds[0]);
+      if (this.previousPipeX < nextPipe.x) {
+        callback();
+      }
+      this.previousPipeX = !this.previousPipeX ? Number.MAX_VALUE : nextPipe.x;
+    }
+  }
+
   // kus sinirlarin disina ciktiysa oldu olarak isaretle
   updateBirdDeadState = () => {
     // detect collisions
@@ -153,5 +167,6 @@ export default class Game {
     this.ctx.fillText(`Jenerasyon: ${this.generationCount}`, 10, 15);
     this.ctx.fillText(`Kus sayisi: ${this.birds.length}`, 10, 30);
     this.ctx.fillText(`En iyi ilerleme: ${(this.highscore / 1000).toFixed(1)} sn`, 10, 45);
+    this.ctx.fillText(`Gecilen pipe sayisi: ${this.passedPipeCount}`, 10, 60);
   }
 }
