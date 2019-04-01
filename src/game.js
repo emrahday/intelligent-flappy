@@ -94,7 +94,10 @@ export default class Game {
     this.updateBirdDeadState();
     this.deadBirds.push(...this.birds.filter(bird => bird.isDead));
     this.birds = this.birds.filter(bird => !bird.isDead);
-    this.onPipePassed(() => { this.passedPipeCount += 1; });
+    this.onPipePassed(() => { 
+      this.passedPipeCount += 1; 
+      console.log ('PASSED' );
+    });
 
     // tum kuslar oldu, oyunu tekrar baslat
     if (this.birds.length === 0) {
