@@ -26,7 +26,6 @@ export default class Game {
 
   // oyunu baslat
   startGame = () => {
-
     this.generationCount += 1;
     this.highscore = Math.max(this.highscore, this.gameStart ? Date.now() - this.gameStart : 0);
     this.gameStart = Date.now();
@@ -94,9 +93,8 @@ export default class Game {
     this.updateBirdDeadState();
     this.deadBirds.push(...this.birds.filter(bird => bird.isDead));
     this.birds = this.birds.filter(bird => !bird.isDead);
-    this.onPipePassed(() => { 
-      this.passedPipeCount += 1; 
-      console.log ('PASSED' );
+    this.onPipePassed(() => {
+      this.passedPipeCount += 1;
     });
 
     // tum kuslar oldu, oyunu tekrar baslat
